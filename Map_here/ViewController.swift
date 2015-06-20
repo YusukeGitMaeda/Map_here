@@ -11,109 +11,113 @@ import MapKit
 import CoreLocation
 
 class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
-    
     var myMapView: MKMapView!
     var myLocationManager: CLLocationManager!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Do any additional setup after loading the view, typically from a nib.
         
-        // LocationManagerの生成.
+        //LocationManagerの生成
         myLocationManager = CLLocationManager()
         
-        // Delegateの設定.
+        //Delegateの設定
         myLocationManager.delegate = self
         
-        // 距離のフィルタ.
+        //距離のフィルタ
         myLocationManager.distanceFilter = 100.0
         
-        // 精度.
+        //制度
         myLocationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         
-        // セキュリティ認証のステータスを取得.
+        //セキュリティ認証のステータスを取得
         let status = CLLocationManager.authorizationStatus()
         
-        // まだ認証が得られていない場合は、認証ダイアログを表示.
-        if(status == CLAuthorizationStatus.NotDetermined) {
-            
-            // まだ承認が得られていない場合は、認証ダイアログを表示.
+        //まだ認証が得られていない場合は、認証ダイアログを表示
+        if(status == CLAuthorizationStatus.NotDetermined){
+            //まだ認証が得られていない場合は認証ダイアログを表示
             self.myLocationManager.requestAlwaysAuthorization();
         }
         
-        // 位置情報の更新を開始.
+        //位置情報の更新を開始
         myLocationManager.startUpdatingLocation()
         
-        // MapViewの生成.
+        //MapViewの生成
         myMapView = MKMapView()
         
-        // MapViewのサイズを画面全体に.
+        //MapViewのサイズを画面全体に
         myMapView.frame = self.view.bounds
         
-        // Delegateを設定.
+        //Delegateを設定
         myMapView.delegate = self
         
-        // MapViewをViewに追加.
-        self.view.addSubview(myMapView)
+        //MapViewに追加
+        myMapView.addSubview(myMapView)
         
-        // 中心点の緯度経度.
+        //中心点の緯度経度
         let myLat: CLLocationDegrees = 37.506804
         let myLon: CLLocationDegrees = 139.930531
         let myCoordinate: CLLocationCoordinate2D = CLLocationCoordinate2DMake(myLat, myLon) as CLLocationCoordinate2D
         
-        // 縮尺.
+        //縮尺
         let myLatDist : CLLocationDistance = 100
         let myLonDist : CLLocationDistance = 100
         
-        // Regionを作成.
+        //Regionを作成
         let myRegion: MKCoordinateRegion = MKCoordinateRegionMakeWithDistance(myCoordinate, myLatDist, myLonDist);
         
-        // MapViewに反映.
+        //MapViewに反映
         myMapView.setRegion(myRegion, animated: true)
-        
     }
     
-    // GPSから値を取得した際に呼び出されるメソッド.
-    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
-        
-        // 配列から現在座標を取得.
+    //GPSから値を収得した際に呼び出されたメソッド
+    func locatuionManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
+        //配列から現在座標を取得
         var myLocations: NSArray = locations as NSArray
         var myLastLocation: CLLocation = myLocations.lastObject as! CLLocation
-        var myLocation:CLLocationCoordinate2D = myLastLocation.coordinate
+        var myLocation: CLLocationCoordinate2D = myLastLocation.coordinate
         
-        // 縮尺.
-        let myLatDist : CLLocationDistance = 100
-        let myLonDist : CLLocationDistance = 100
+        //縮尺
+        let myLastDist: CLLocationDistance = 100
+        let myLonDist: CLLocationDistance = 100
         
-        // Regionを作成.
-        let myRegion: MKCoordinateRegion = MKCoordinateRegionMakeWithDistance(myLocation, myLatDist, myLonDist);
+        //Regionを作成
+        let myRegion: MKCoordinateRegion = MKCoordinateRegionMakeWithDistance(myLocation, myLastDist, myLonDist);
         
-        // MapViewに反映.
+        //MapViewに反映
         myMapView.setRegion(myRegion, animated: true)
     }
     
-    // Regionが変更した時に呼び出されるメソッド.
-    func mapView(mapView: MKMapView!, regionDidChangeAnimated animated: Bool) {
+    //Regionが変更した時に呼び出されるメソッド
+    func mapView(mapView: MKMapView!, regionDidChangeAnimated animated: Bool){
         println("regionDidChangeAnimated")
     }
     
-    // 認証が変更された時に呼び出されるメソッド.
+    //認証が変更された時に呼び出されるメソッド
     func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         switch status{
         case .AuthorizedWhenInUse:
-            println("AuthorizedWhenInUse")
-        case .AuthorizedAlways:
+            println("AuthoeizedWhenInUse")
+        /*
+        case .Authorized:
             println("Authorized")
+        */
         case .Denied:
             println("Denied")
         case .Restricted:
-            println("Restricted")
+            println("Resticated")
         case .NotDetermined:
             println("NotDetermined")
         default:
             println("etc.")
         }
     }
-    
-    
-    
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+
+
 }
+
